@@ -15,7 +15,9 @@ const LANGUAGE_IDS: Record<string, number> = {
   // add other languages here
 };
 
-const Output = ({ editorRef, language }: { editorRef: React.RefObject<any>; language: string; }) => {
+
+
+const Output = ({ editorRef, language , input}: { editorRef: React.RefObject<any>; language: string; input:any }) => {
       const {id} = useParams();
   const toast = useToast();
   const [output, setOutput] = useState<string[] | null>(null);
@@ -25,12 +27,34 @@ const Output = ({ editorRef, language }: { editorRef: React.RefObject<any>; lang
   
   const router = useRouter();
   const runCode = async () => {
+    console.log("button clicked")
     const sourceCode = editorRef.current.getValue();
     if (!sourceCode) return;
     try {
       setIsLoading(true);
+      //  const cleanCode = sourceCode
+      //     .replace(/\t/g, "    ")
+      //     .split("\n")
+      //     .map((line:string, i:number) => {
+      //       // only fix first line
+      //       if (i === 0) return line.trimStart();
+      //       return line;
+      //     })
+      //     .join("\n");
+
+        // const matchs = input.match(/\[.*\]/);
+        //   let nums=  0;
+        // if (matchs) {
+        //     nums = JSON.parse(matchs[0]);
+        // }
+        // console.log("nums is here : ",nums);
+      // const wrappedCode = `${cleanCode}
+// input = ${JSON.stringify(nums)};
+// console.log(EveryLanguageFunction(input));
+        // `;
+        // console.log(wrappedCode)
       const result = await executeCode(LANGUAGE_IDS[language], sourceCode);
-      
+      console.log(result);
       const outputText =
         result?.stdout ||
         result?.stderr ||
@@ -40,6 +64,7 @@ const Output = ({ editorRef, language }: { editorRef: React.RefObject<any>; lang
 
       setIsError(!!result?.stderr || !!result?.compile_output);
       result.stderr ? setIsError(true) : setIsError(false);
+      
     } catch (error) {
       console.log(error);
       toast({
@@ -58,10 +83,17 @@ const handleSubmit = async () => {
   if (!sourceCode) return;
   setIsSubmitting(true); // Your loading state
   try {
+    const lines = sourceCode.trim().split("\n");
+
+    // Remove last 2 lines
+    const cleanedCode = lines.slice(0, -2).join("\n");
+
+    console.log("Here is the cleansed code: ",cleanedCode);
+
     const response = await fetch('/api/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: sourceCode, questionId: id, language }),
+      body: JSON.stringify({ code: cleanedCode, questionId: id, language }),
     });
 
     if (!response.ok) throw new Error("Server responded with an error");
@@ -69,7 +101,7 @@ const handleSubmit = async () => {
     const data = await response.json();
     console.log("data success = " , data)
     // Ensure data exists before redirecting
-      router.push(`/question/${id}/result?success=${data.allPassed}`);
+      router.push(`/question/${id}/result?success=${data.success}`);
     setIsSubmitting(false);
   } catch (error) {
     console.error("Submission failed:", error);

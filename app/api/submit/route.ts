@@ -6,10 +6,10 @@ import { getServerSession } from "next-auth";
 import { number } from "zod";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { runCode } from "@/lib/runCode";
+import ts from "typescript"
 
 export async function POST(req: NextRequest) {
-  const { code, language, questionId } = await req.json();
-
+  const { code,  questionId , language } = await req.json();
   await dbConnect();
 
   // ✅ get session ONCE
@@ -30,7 +30,10 @@ const key = Object.keys(testCasesObj).find((k) => {
   const extracted = parseInt(k.split("_")[0], 10);
   return extracted === cleanId;
 });
-
+let jsCode;
+if(language === "typescript"){
+   jsCode = ts.transpile(code);
+}
   console.log("Key" , key)
   if (!key) {
     return NextResponse.json({ error: "Invalid questionId" }, { status: 400 });
@@ -44,12 +47,17 @@ console.log("test cases =", testCases);
 
   // ✅ correct loop
   for (const test of testCases) {
-    const output = await runCode(code, language, test.input);
+    console.log("Language : ", language)
+    console.log(code)
+    const output = await runCode(language==="typescript" ? jsCode : code, language, test.input);
+    console.log("Output is here : " , output)
 
     const passed = output.trim() === String(test.expected).trim();
 
-    if (!passed) allPassed = false;
-
+    if (!passed) {
+      allPassed = false;
+      break;
+    }
     results.push({
       input: test.input,
       expected: test.expected,
@@ -57,6 +65,7 @@ console.log("test cases =", testCases);
       passed,
     });
   }
+  console.log("Here is the result : ",results)
 
   // ✅ store in DB if passed
   if (allPassed) {

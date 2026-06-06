@@ -7,31 +7,26 @@ export default function ResultPage() {
   const router = useRouter();
   const params = useParams();
   const questionId = params.id;
-  const status = searchParams.get('status');
-  const score = searchParams.get('score');
+  const status = searchParams.get('success');
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white px-4">
   <div className="bg-gray-800 rounded-2xl shadow-lg p-10 max-w-md w-full text-center">
     <div
       className={`text-6xl mb-4 ${
-        status === "passed" ? "text-green-400" : "text-red-400"
+        status === "true" ? "text-green-400" : "text-red-400"
       }`}
     >
-      {status === "passed" ? "🎉" : "❌"}
+      {status === "true" ? "🎉" : "❌"}
     </div>
     <h1
       className={`text-3xl font-bold mb-4 ${
-        status === "passed" ? "text-green-400" : "text-red-400"
+        status === "true" ? "text-green-400" : "text-red-400"
       }`}
     >
-      {status === "passed" ? "Accepted!" : "Wrong Answer"}
+      {status === "true" ? "Accepted!" : "Wrong Answer"}
     </h1>
-    <p className="text-gray-300 mb-6">
-      You passed <span className="font-semibold">{score}</span> out of 20 test
-      cases.
-    </p>
-    {status === "passed" ? (
+    {status === "true" ? (
       <p className="text-green-200">
         Excellent! Keep up the good work.
       </p>

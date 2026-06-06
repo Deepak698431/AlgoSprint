@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CodeEditor from "../editor/CodeEditor";
 
 // Updated Type to be more specific
@@ -92,7 +92,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({ question}) => {
         
         {/* The Editor Area */}
         <div className="grow overflow-hidden">
-          <CodeEditor language={language} editorRef={editorRef} />
+          <CodeEditor language={language} editorRef={editorRef} input={question.input} />
         </div>
 
       </div>

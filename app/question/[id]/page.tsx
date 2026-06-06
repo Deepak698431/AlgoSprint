@@ -13,15 +13,20 @@ type Question = {
 
 // Props type for App Router dynamic page
 type QuestionPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
+  searchParams: Promise<{
+    success?: string;
+  }>;
 };
 
-const QuestionPage = async({ params }: QuestionPageProps) => {
+const QuestionPage = async({ params , searchParams}: QuestionPageProps) => {
     const { id } = await params;
   const questionId = parseInt(id, 10);
   console.log("Question id" , questionId)
+  const {success} = await searchParams;
+  console.log("Status of this question : " , success);
 
   const question: Question | undefined = problems.find(
     (q) => q.id === questionId

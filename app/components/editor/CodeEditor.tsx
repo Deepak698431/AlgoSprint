@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { Box, HStack, StackProps } from "@chakra-ui/react";
+import React, { useRef, useState , useEffect } from "react";
+import { Box, HStack, Input, StackProps } from "@chakra-ui/react";
 import { Editor } from "@monaco-editor/react";
 import LanguageSelector from "./LanguageSelector";
 import Output from "./Output";
@@ -14,59 +14,40 @@ export type Language = "javascript" | "typescript" | "python" | "java" | "csharp
 // 2️⃣ Code snippets
 export const CODE_SNIPPETS: Record<Language, string> = {
   javascript: `
-function greet(name) {
-  console.log("Hello, " + name + "!");
+function EveryLanguageFunction(nums) {
+    // user writes body only
 }
-
-greet("Alex");
 `,
   typescript: `
-type Params = {
-  name: string;
+function EveryLanguageFunction(nums: number[]): number {
+    // user writes body only
 }
 
-function greet(data: Params) {
-  console.log("Hello, " + data.name + "!");
-}
-
-greet({ name: "Alex" });
 `,
   python: `
-def greet(name):
+def EveryLanguageFunction(name):
   print("Hello, " + name + "!")
 
-greet("Alex")
 `,
   java: `
-public class HelloWorld {
+public class EveryLanguageFunction {
   public static void main(String[] args) {
     System.out.println("Hello World");
   }
 }
 `,
   csharp: `
-using System;
-
-namespace HelloWorld
-{
-  class Hello { 
-    static void Main(string[] args) {
-      Console.WriteLine("Hello World in C#");
+class Solution {
+    public int EveryLanguageFunction(int[] nums) {
+        // user writes body only
     }
-  }
 }
 `,
   php: `
-  <?php
-// A basic PHP console script starts with the PHP opening tag
-
-$user_name = "World";
-
-// Use echo to print a string to the console
-echo "Hello, " . $user_name . "!\n";
-
-// You can also use print, it has a return value of 1 and can be used in expressions
-print "This is another line of output.\n";
+<?php
+function EveryLanguageFunction($nums) {
+    // user writes body only
+}
 ?>
 `,
 };
@@ -75,10 +56,13 @@ print "This is another line of output.\n";
 interface CodeEditorProps {
   language: Language;
   editorRef: React.RefObject<any>;
+  input?: string;
 }
 
 
-const CodeEditor: React.FC<CodeEditorProps> = () => {
+const CodeEditor = ({
+  input,
+}: CodeEditorProps) => {
   const editorRef = useRef<any>(null);
   const [value, setValue] = useState<string>("");
   const [language, setLanguage] = useState<Language>("javascript");
@@ -92,6 +76,7 @@ const onMount: OnMount = (editor) => {
     setLanguage(lang);
     setValue(CODE_SNIPPETS[lang]);
   };
+
 
   return (
     <Box>
@@ -116,7 +101,7 @@ const onMount: OnMount = (editor) => {
         </Box>
 
         {/* Output side */}
-        <Output editorRef={editorRef} language={language}  />
+        <Output editorRef={editorRef} language={language} input={input}  />
       </HStack>
     </Box>
   );
