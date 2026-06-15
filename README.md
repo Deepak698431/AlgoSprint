@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI-Powered Coding Interview Platform
 
-## Getting Started
+A modern Next.js application built to help developers prepare for technical interviews with real coding practice, user authentication, email verification, and problem submission evaluation.
 
-First, run the development server:
+## 🚀 Project Overview
+
+This platform is designed to support interactive interview preparation with:
+- User sign-up, sign-in, and account verification
+- OAuth login with GitHub and Google
+- Problem exploration and search/filtering
+- Secure code submission and test case validation
+- MongoDB-backed user management and progress tracking
+
+## 🧩 Key Features
+
+- **Authentication**
+  - Email/password credentials
+  - GitHub and Google OAuth
+  - Verified user flow with OTP email verification
+- **Problem browsing**
+  - Search and filter by difficulty
+  - Problem list with difficulty labels
+- **Code execution**
+  - Submit solutions to backend test case runner
+  - TypeScript transpilation supported for submissions
+- **Account verification**
+  - OTP generation and expiry handling
+  - Resend verification code endpoint
+- **Modern UI**
+  - Tailwind-style dark interface with responsive components
+  - Built with Chakra UI, Lucide icons, and Framer Motion support
+
+## 📁 Project Structure
+
+- `app/` — Next.js app routes, UI pages, providers, and API endpoints
+- `app/api/` — Backend API routes for auth, signup, verify, submission, and email handling
+- `app/components/` — Reusable UI components for editor, auth forms, and problem display
+- `lib/` — Database connectors, execution helpers, problem/test case data, and email client setup
+- `models/` — Mongoose user model and schema definitions
+- `helpers/` — Email helper for resend verification messages
+- `Schemas/` — Input validation schemas using Zod
+- `types/` — NextAuth type augmentations
+
+## 🛠️ Tech Stack
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS / `@tailwindcss/postcss`
+- MongoDB + Mongoose
+- NextAuth.js for authentication
+- Resend for transactional email delivery
+- `bcrypt` for password hashing
+- `react-hook-form` / Zod for validation
+- Monaco / Ace editor integrations for code editing
+
+## ⚙️ Environment Variables
+
+Create a `.env.local` file with the following variables:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+MONGODB_URI=your_mongodb_connection_string
+RESEND_API_KEY=your_resend_api_key
+GITHUB_ID=your_github_oauth_client_id
+GITHUB_SECRET=your_github_oauth_client_secret
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> Note: `NEXTAUTH_URL` should match the running app URL. For production, update the value accordingly.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧪 Local Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Install dependencies and run the development server:
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Then open:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+http://localhost:3000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🔐 Authentication Flow
 
-## Deploy on Vercel
+1. User signs up with email, username, and password.
+2. Platform stores a 6-digit OTP and expiry timestamp.
+3. User receives verification code by email.
+4. User enters OTP to verify their account.
+5. Authenticated users can submit coding problems and track progress.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ✅ Usage
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `GET /` — Landing page
+- `GET /signin` — Sign in page
+- `GET /signup` — Sign up page
+- `GET /verify` — Verify account page
+- `GET /explore` — Browse problems
+- `GET /question/[id]` — Problem detail and code editor
+- `POST /api/signup` — Register new users
+- `POST /api/verify-code` — Verify OTP codes
+- `POST /api/ManageVerification` — Resend verification email
+- `POST /api/submit` — Run code against test cases and record success
+
+## 🔧 Notes for Developers
+
+- The backend submission route uses `@/lib/runCode` for executing user code.
+- `app/api/submit/route.ts` validates session before running tests.
+- User verification relies on `verifyCode` and `verifyCode_Expiry` fields in MongoDB.
+- OAuth still requires valid provider credentials and setup in GitHub/Google.
+
+## 📌 Future Improvements
+
+- Add full problem detail page with editor + expected output preview
+- Improve code execution security and sandboxing
+- Add user dashboard and progress analytics
+- Expand problem bank and categories
+- Add comments, discussions, and interview-style timed sessions
+
+## 📝 License
+
+This repository is available for customization and improvement.
+
+---
+
+If you need help configuring the environment or extending the platform, feel free to ask.
